@@ -23,6 +23,6 @@ help: #Pour gérer automatiquement l'aide ## Display all comands available
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 git: 
-	git add -A
+	git add -A 
 	git commit -m "Auto Commit"
 	git push
