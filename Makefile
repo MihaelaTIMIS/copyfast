@@ -1,5 +1,7 @@
 .DEFAULT_GOAL = help
 .SILENT:
+ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+$(eval $(ARGS):;@:)
 
 build-linux:  ## Build de la version linux
 	env GOOS=linux GOARCH=amd64 go build -o build/linux/copyfast ./cmd/copyfast.go
@@ -17,7 +19,10 @@ test: build-linux ## Test de la version linux sur container
 	docker run locals/copyfast
 
 run: ## run sans compilation du projet GO
-	go run cmd/copyfast.go
+		go run cmd/copyfast.go $(ARGS)
+
+ftp-server:
+	docker run -p 21:21 -p 21000-21010:21000-21010 -e USERS="toto|toto" -e ADDRESS=127.0.0.1 delfer/alpine-ftp-server
 
 help: #Pour gérer automatiquement l'aide ## Display all comands available
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
